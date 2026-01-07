@@ -33,10 +33,10 @@ const Navbar = () => {
         </nav>
 
         {/* SEARCH BAR */}
-        <div className="flex flex-1 justify-center px-10">
+        <div className="flex flex-1 justify-center px-10 ">
           <Input
             placeholder="Search for products, brands and more"
-            className="h-10 rounded-full border border-softBorder bg-mutedBg px-4 text-sm focus-visible:ring-brand"
+            className="h-10 rounded-full border border-softBorder bg-gray-200 px-4 text-sm focus-visible:ring-brand"
           />
         </div>
 
