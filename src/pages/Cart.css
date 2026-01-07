@@ -1,0 +1,6 @@
+.cart-container { display: flex; flex-direction: column; padding: 24px; }
+.cart-header { display: flex; justify-content: space-between; margin-bottom: 24px; }
+.cart-body { display: flex; gap: 32px; }
+.cart-items { flex: 2; }
+.cart-summary { flex: 1; border: 1px solid #eee; padding: 16px; border-radius: 8px; }
+.cart-item { display: flex; gap: 16px; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
