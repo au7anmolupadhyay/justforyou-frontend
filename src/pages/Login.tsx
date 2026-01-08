@@ -2,10 +2,66 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "@/services/authService";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    setError(null);
+    setLoading(true);
+
+    try {
+      if (mode === "login") {
+        // LOGIN FLOW
+        const res = await authService.login({
+          email: form.email,
+          password: form.password,
+        });
+
+        localStorage.setItem("accessToken", res.accessToken);
+        localStorage.setItem("refreshToken", res.refreshToken);
+
+        navigate("/");
+      } else {
+        // SIGNUP FLOW
+        await authService.register({
+          email: form.email,
+          password: form.password,
+          name: form.name,
+          role: "USER", // default role
+        });
+
+        // after signup → switch to login
+        setMode("login");
+      }
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.message ||
+          "Something went wrong. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">
@@ -25,17 +81,52 @@ const Login = () => {
           <h1 className="text-3xl font-extrabold text-gray-900">
             {mode === "login" ? "Welcome Back 👋" : "Create Account ✨"}
           </h1>
+
           <p className="mt-2 text-sm text-gray-600">
             Fashion curated just for you
           </p>
 
-          <div className="mt-6 space-y-4">
-            {mode === "signup" && <Input placeholder="Full Name" />}
-            <Input placeholder="Email address" />
-            <Input type="password" placeholder="Password" />
+          {error && (
+            <p className="mt-4 text-sm text-red-500 text-center">
+              {error}
+            </p>
+          )}
 
-            <Button className="w-full bg-black hover:bg-gray-900">
-              {mode === "login" ? "Sign In" : "Sign Up"}
+          <div className="mt-6 space-y-4">
+            {mode === "signup" && (
+              <Input
+                name="name"
+                placeholder="Full Name"
+                value={form.name}
+                onChange={handleChange}
+              />
+            )}
+
+            <Input
+              name="email"
+              placeholder="Email address"
+              value={form.email}
+              onChange={handleChange}
+            />
+
+            <Input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+            />
+
+            <Button
+              className="w-full bg-black hover:bg-gray-900"
+              disabled={loading}
+              onClick={handleSubmit}
+            >
+              {loading
+                ? "Please wait..."
+                : mode === "login"
+                ? "Sign In"
+                : "Sign Up"}
             </Button>
           </div>
 

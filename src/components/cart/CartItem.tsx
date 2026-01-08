@@ -1,4 +1,4 @@
-import { useCart, CartProduct } from "@/context/CartContext";
+import { useCart, CartProduct } from "@/cart/CartContext";
 
 const CartItem: React.FC<{ product: CartProduct }> = ({ product }) => {
   const { updateQty, removeFromCart } = useCart();
