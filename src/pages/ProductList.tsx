@@ -1,72 +1,64 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import  apiClient from "@/services/apiClient";
 import ProductCard from "@/components/product/ProductCard";
 
-const allProducts = [
-  {
-    id: "1",
-    category: "men",
-    image:
-      "https://images.unsplash.com/photo-1521334884684-d80222895322?auto=format&fit=crop&w=600&q=80",
-    brand: "H&M",
-    title: "Slim Fit Cotton T-Shirt",
-    price: 799,
-    originalPrice: 1499,
-  },
-  {
-    id: "2",
-    category: "men",
-    image:
-      "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80",
-    brand: "ZARA",
-    title: "Casual Denim Jacket",
-    price: 2499,
-    originalPrice: 3999,
-  },
-  {
-    id: "3",
-    category: "women",
-    image:
-      "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=600&q=80",
-    brand: "ONLY",
-    title: "Floral Summer Dress",
-    price: 1899,
-    originalPrice: 2999,
-  },
-];
+type Product = {
+  id: number;
+  title: string;
+  price: number;
+  brand: string;
+  category: string;
+  imageUrl: string;
+};
 
 const ProductList = () => {
-  const { category } = useParams();
+  const { category } = useParams<{ category: string }>();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const products = allProducts.filter(
-    (p) => p.category === category
-  );
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+
+    apiClient
+      .get("/product", {
+        params: { category },
+        signal: controller.signal,
+      })
+      .then((res) => setProducts(res.data))
+      .catch((err) => {
+        if (err.name !== "CanceledError") {
+          console.error(err);
+        }
+      })
+      .finally(() => setLoading(false));
+
+    return () => controller.abort();
+  }, [category]);
+
+  if (loading) {
+    return <p className="text-center mt-10">Loading products...</p>;
+  }
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-8">
+    <div className="mx-auto max-w-7xl px-6 py-10">
+      <h1 className="mb-6 text-2xl font-bold capitalize">
+        {category} Products
+      </h1>
 
-      {/* HEADER */}
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-bold capitalize">
-          {category} Collection
-        </h1>
-
-        <select className="rounded border px-3 py-2 text-sm">
-          <option>Sort by: Popularity</option>
-          <option>Price: Low to High</option>
-          <option>Price: High to Low</option>
-        </select>
-      </div>
-
-      {/* GRID */}
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-        {products.map((p) => (
-          <ProductCard key={p.id} {...p} />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            title={product.title}
+            image={product.imageUrl}
+            price={product.price}
+            id={product.id.toString()}
+            brand={product.brand}
+          />
         ))}
       </div>
-
-      {products.length === 0 && (
-        <p className="mt-8 text-textMuted">No products found.</p>
-      )}
     </div>
   );
 };
