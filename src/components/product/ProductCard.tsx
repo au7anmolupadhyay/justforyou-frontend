@@ -1,9 +1,9 @@
+import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 
-type ProductCardProps = {
-  id: string;
+export type ProductCardProps = {
+  id: number;
   image: string;
   brand: string;
   title: string;
@@ -21,7 +21,6 @@ const ProductCard = ({
 }: ProductCardProps) => {
   return (
     <div className="group relative rounded-lg border bg-white p-3 hover:shadow-lg">
-
       <Link to={`/product/${id}`}>
         <img
           src={image}

@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 const categories = [
-  { name: "Men", path: "men", image: "https://images.unsplash.com/photo-1516826957135-700dedea698c?auto=format&fit=crop&w=400&q=80" },
-  { name: "Women", path: "women", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=400&q=80" },
-  { name: "Kids", path: "kids", image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=400&q=80" },
-  { name: "Beauty", path: "beauty", image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=400&q=80" },
+  { name: "Men", path: "Men", image: "https://images.unsplash.com/photo-1516826957135-700dedea698c?auto=format&fit=crop&w=400&q=80" },
+  { name: "Women", path: "Women", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=400&q=80" },
+  { name: "Kids", path: "Kids", image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=400&q=80" },
+  { name: "Beauty", path: "Beauty", image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=400&q=80" },
   { name: "Devices", path: "Devices", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9" },
   { name: "Sports & Fitness", path: "Sports & Fitness", image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438" },
 ];

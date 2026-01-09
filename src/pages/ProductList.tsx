@@ -41,6 +41,15 @@ const ProductList = () => {
     return <p className="text-center mt-10">Loading products...</p>;
   }
 
+  if (!loading && products.length === 0) {
+  return (
+    <p className="text-center mt-10 text-gray-500">
+      No products found for {category}
+    </p>
+  );
+}
+
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
       <h1 className="mb-6 text-2xl font-bold capitalize">
@@ -54,7 +63,7 @@ const ProductList = () => {
             title={product.title}
             image={product.imageUrl}
             price={product.price}
-            id={product.id.toString()}
+            id={product.id}
             brand={product.brand}
           />
         ))}

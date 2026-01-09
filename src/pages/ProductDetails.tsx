@@ -1,81 +1,63 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import apiClient from "@/services/apiClient";
 
-const mockProduct = {
-  id: "1",
-  brand: "Puma",
-  title: "Men Skyrocket Lite Running Shoes",
-  price: 2999,
-  originalPrice: 4999,
-  rating: "4.1",
-  reviews: "1.8k",
-  image:
-    "https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=800&q=80",
+type Product = {
+  id: number;
+  brand: string;
+  title: string;
+  description: string;
+  price: number;
+  imageUrl: string;
 };
 
 const ProductDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiClient
+      .get(`/product/${id}`)
+      .then((res) => setProduct(res.data))
+      .catch(() => setProduct(null))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return <p className="text-center mt-10">Loading product...</p>;
+  }
+
+  if (!product) {
+    return <p className="text-center mt-10">Product not found</p>;
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
-
-      {/* LEFT – IMAGE */}
+      {/* IMAGE */}
       <div className="rounded-lg overflow-hidden border">
         <img
-          src={mockProduct.image}
-          alt={mockProduct.title}
+          src={product.imageUrl}
+          alt={product.title}
           className="w-full object-cover"
         />
       </div>
 
-      {/* RIGHT – DETAILS */}
+      {/* DETAILS */}
       <div>
-        <h1 className="text-2xl font-bold">{mockProduct.brand}</h1>
-        <p className="mt-1 text-gray-600">{mockProduct.title}</p>
+        <h1 className="text-2xl font-bold">{product.brand}</h1>
+        <p className="mt-1 text-gray-600">{product.title}</p>
 
-        <div className="mt-3 flex items-center gap-3 text-sm">
-          <span className="rounded bg-green-600 px-2 py-1 text-white">
-            {mockProduct.rating} ★
-          </span>
-          <span className="text-gray-500">
-            {mockProduct.reviews} Ratings
-          </span>
+        <div className="mt-4 text-2xl font-bold">
+          ₹{product.price}
         </div>
 
-        <div className="mt-4 flex items-center gap-3">
-          <span className="text-2xl font-bold">
-            ₹{mockProduct.price}
-          </span>
-          <span className="line-through text-gray-400">
-            ₹{mockProduct.originalPrice}
-          </span>
-          <span className="text-brand font-semibold">
-            {Math.round(
-              ((mockProduct.originalPrice - mockProduct.price) /
-                mockProduct.originalPrice) *
-                100
-            )}
-            % OFF
-          </span>
-        </div>
+        <p className="mt-4 text-sm text-gray-600">
+          {product.description}
+        </p>
 
-        {/* SIZE */}
-        <div className="mt-6">
-          <p className="mb-2 font-semibold">Select Size</p>
-          <div className="flex gap-3">
-            {["6", "7", "8", "9", "10"].map((size) => (
-              <button
-                key={size}
-                className="h-10 w-10 rounded-full border hover:border-brand"
-              >
-                {size}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ACTIONS */}
         <div className="mt-6 flex gap-4">
           <Button className="flex-1 bg-brand text-white">
             ADD TO BAG
